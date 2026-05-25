@@ -4,7 +4,7 @@ class SecondClass extends StatefulWidget {
   const SecondClass({super.key});
 
   @override
-  _SecondClassState createState() => new _SecondClassState();
+  State<SecondClass> createState() => _SecondClassState();
 }
 
 class _SecondClassState extends State<SecondClass> {
@@ -13,19 +13,16 @@ class _SecondClassState extends State<SecondClass> {
   String name = '';
   int age = 0;
   String password = '';
-  String maritalStatus = 'Single';
+  String maritalStatus = 'Casada';
   bool termsChecked = true;
+  String selectedLocation = 'Oaxaca';
 
-  List<String> locations = ['A', 'B', 'C', 'D'];
-  String? selectedLocation;
+  final List<String> locations = ['Oaxaca', 'Veracruz', 'Chiapas', 'Durango'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 10.0,
-        title: Center(child: Text('Title')),
-        actions: <Widget>[Icon(Icons.settings)],
         // bottom: PreferredSize(
         //     preferredSize: Size.fromHeight(40.0),
         //   child: Text('This is a text in appbar'),
@@ -41,12 +38,12 @@ class _SecondClassState extends State<SecondClass> {
                 children: <Widget>[
                   TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'Enter Name',
-                      hintText: 'name',
+                      labelText: 'Ingrese su nombre',
+                      hintText: 'nombre',
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a name';
+                        return 'Por favor ingrese su nombre';
                       }
                       return null;
                     },
@@ -58,13 +55,13 @@ class _SecondClassState extends State<SecondClass> {
                   ),
                   TextFormField(
                     decoration: InputDecoration(
-                      hintText: 'Age',
-                      labelText: 'Enter Age',
+                      hintText: 'Edad',
+                      labelText: 'Ingrese su edad',
                     ),
                     keyboardType: TextInputType.phone,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your age';
+                        return 'Por favor ingrese su edad';
                       }
                       return null;
                     },
@@ -77,12 +74,12 @@ class _SecondClassState extends State<SecondClass> {
                   TextFormField(
                     obscureText: true,
                     decoration: InputDecoration(
-                      hintText: 'Password',
-                      labelText: 'Enter Password',
+                      hintText: 'Contraseña',
+                      labelText: 'Ingrese su contraseña',
                     ),
                   ),
                   DropdownButton<String>(
-                    hint: const Text('Please choose the city you live in'),
+                    hint: const Text('Por favor elija la ciudad donde vive'),
                     value: selectedLocation,
                     items: locations.map((location) {
                       return DropdownMenuItem<String>(
@@ -92,7 +89,7 @@ class _SecondClassState extends State<SecondClass> {
                     }).toList(),
                     onChanged: (String? newValue) {
                       setState(() {
-                        selectedLocation = newValue;
+                        selectedLocation = newValue ?? 'Oaxaca';
                       });
                     },
                   ),
@@ -108,13 +105,13 @@ class _SecondClassState extends State<SecondClass> {
                       children: <Widget>[
                         Expanded(
                           child: RadioListTile<String>(
-                            title: const Text('Single'),
+                            title: const Text('Soltera'),
                             value: 'Single',
                           ),
                         ),
                         Expanded(
                           child: RadioListTile<String>(
-                            title: const Text('Married'),
+                            title: const Text('Casada'),
                             value: 'Married',
                           ),
                         ),
@@ -129,7 +126,7 @@ class _SecondClassState extends State<SecondClass> {
                       });
                     },
                     title: const Text(
-                      'Sign up for the newspaper and related articles',
+                      'Suscribirse al periódico y artículos relacionados',
                     ),
                   ),
                   ElevatedButton(
@@ -138,12 +135,9 @@ class _SecondClassState extends State<SecondClass> {
                       foregroundColor: Colors.white,
                     ),
                     onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        _formKey.currentState?.save();
-                        // Process the form data
-                      }
+                      _submitForm();
                     },
-                    child: const Text('Register'),
+                    child: const Text('Registrar'),
                   ),
                 ],
               ),
@@ -152,5 +146,18 @@ class _SecondClassState extends State<SecondClass> {
         ),
       ),
     );
+  }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      debugPrint('Name: $name');
+      debugPrint('Age: $age');
+      debugPrint('Password: $password');
+      debugPrint('City: ${selectedLocation ?? 'Not selected'}');
+      debugPrint('Marital Status: $maritalStatus');
+      debugPrint('Terms Checked: $termsChecked');
+    }
   }
 }
