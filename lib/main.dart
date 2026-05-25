@@ -1,6 +1,5 @@
 import 'package:first_flutter_project/second_file.dart';
 import 'package:flutter/material.dart';
-import 'package:first_flutter_project/util.dart';
 
 void main() => runApp(MyClass());
 

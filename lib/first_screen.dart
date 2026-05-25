@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 class SecondClass extends StatefulWidget {
@@ -10,51 +8,149 @@ class SecondClass extends StatefulWidget {
 }
 
 class _SecondClassState extends State<SecondClass> {
+  final _formKey = GlobalKey<FormState>();
+
+  String name = '';
+  int age = 0;
+  String password = '';
   String maritalStatus = 'Single';
   bool termsChecked = true;
 
   List<String> locations = ['A', 'B', 'C', 'D'];
+  String? selectedLocation;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 10.0,
-        title: Center(child: Text('Titulo')),
+        title: Center(child: Text('Title')),
         actions: <Widget>[Icon(Icons.settings)],
+        // bottom: PreferredSize(
+        //     preferredSize: Size.fromHeight(40.0),
+        //   child: Text('This is a text in appbar'),
+        // ),
       ),
       body: Material(
-        child: ListView(
-          children: <Widget>[
-            ListTile(
-              leading: Icon(Icons.ac_unit),
-              title: Text('Dog'),
-              subtitle: Text('Esto es un animal'),
-              trailing: Icon(Icons.access_time),
+        child: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 10.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Enter Name',
+                      hintText: 'name',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a name';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      setState(() {
+                        name = value ?? '';
+                      });
+                    },
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Age',
+                      labelText: 'Enter Age',
+                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your age';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      setState(() {
+                        age = int.tryParse(value ?? '') ?? 0;
+                      });
+                    },
+                  ),
+                  TextFormField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      hintText: 'Password',
+                      labelText: 'Enter Password',
+                    ),
+                  ),
+                  DropdownButton<String>(
+                    hint: const Text('Please choose the city you live in'),
+                    value: selectedLocation,
+                    items: locations.map((location) {
+                      return DropdownMenuItem<String>(
+                        value: location,
+                        child: Text(location),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedLocation = newValue;
+                      });
+                    },
+                  ),
+                  RadioGroup<String>(
+                    groupValue: maritalStatus,
+                    onChanged: (String? value) {
+                      setState(() {
+                        maritalStatus = value ?? 'Single';
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text('Single'),
+                            value: 'Single',
+                          ),
+                        ),
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text('Married'),
+                            value: 'Married',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  CheckboxListTile(
+                    value: termsChecked,
+                    onChanged: (value) {
+                      setState(() {
+                        termsChecked = value ?? false;
+                      });
+                    },
+                    title: const Text(
+                      'Sign up for the newspaper and related articles',
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        _formKey.currentState?.save();
+                        // Process the form data
+                      }
+                    },
+                    child: const Text('Register'),
+                  ),
+                ],
+              ),
             ),
-            ListTile(
-              leading: Icon(Icons.access_alarm),
-              title: Text('Cat'),
-              subtitle: Text('Esto es un animal'),
-              trailing: Icon(Icons.access_time),
-            ),
-            Padding(child: Text('Dog'), padding: EdgeInsetsGeometry.all(10.0)),
-            Container(
-              child: Text('Cat'),
-              margin: EdgeInsets.symmetric(horizontal: 30.0),
-              color: Colors.green,
-              padding: EdgeInsets.only(top: 20.0),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
-}
-
-String generateNumbers() {
-  var r = Random();
-  int i = r.nextInt(20);
-
-  return 'Un numero aleatorio entre 0 y 20 $i';
 }
